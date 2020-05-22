@@ -1,51 +1,35 @@
 
-var dpForward = [Int](repeating: 1, count: 4)
-
-
 
 class Solution {
-    
-    func longestMountain(_ A: [Int]) -> Int {
-        guard A.count > 1 else {return 0}
-        var longestLength = 0
-        var upwardDetecting = true
+    func divide(_ dividend: Int, _ divisor: Int) -> Int {
+        var isNegative = false
+        if (dividend<0 && divisor>0) || (dividend>0 && divisor<0) {isNegative = true}
         
-        var upwardCouting = 0
-        var downwardCounting = 0
+        var newDivident = abs(dividend)
+        let newDivisor = abs(divisor)
+        var res = 0
         
-        func initCounter() {
-            upwardDetecting = true
-            upwardCouting = 0
-            downwardCounting = 0
+        for offset in (0..<32).reversed() {
+            if newDivident >> offset >= newDivisor {
+                newDivident -= newDivisor << offset
+                res += 1 << offset
+            }
         }
         
-        for index in 0..<A.count-1 {
-            if A[index] < A[index+1] {
-                if !upwardDetecting { initCounter()}
-                upwardCouting += 1
-            }
-            else if A[index] > A[index+1] {
-                if upwardCouting > 0 && upwardDetecting {upwardDetecting = false}
-                if !upwardDetecting {
-                    downwardCounting += 1
-                    let temp = upwardCouting + downwardCounting + 1
-                    if temp > longestLength {
-                        longestLength = temp
-                    }
-                    
-                }
-            } else {
-                initCounter()
-            }
-            
-        }
+        res = isNegative ? -res : res
         
-        return longestLength
+        if res > Int32.max {
+            res = Int(Int32.max)
+        } else if res < Int32.min {
+            res = Int(Int32.min)
+        }
+       
+        
+        return res
     }
 }
 
-Solution().longestMountain([2, 1, 4, 7, 3, 2, 5])
+Solution().divide(100, 7)
 
-Solution().longestMountain([0,1,2,3,4,5,4,3,2,1,0])
 
-Solution().longestMountain([875,884,239,731,723,685])
+Solution().divide(-2147483648, -1)
